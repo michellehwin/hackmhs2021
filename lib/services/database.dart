@@ -9,9 +9,12 @@ class DatabaseService {
   //collection reference
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
+  final CollectionReference taskCollection =
+      FirebaseFirestore.instance.collection('tasks');
 
   //set email and name
-  Future updateUserData({String email,
+  Future updateUserData({
+    String email,
     String firstName,
     String lastName,
   }) async {
@@ -20,5 +23,11 @@ class DatabaseService {
       'firstName': firstName,
       'lastName': lastName,
     });
+  }
+
+  Future addTask({String description}) async {
+    return await taskCollection
+        .doc(uid)
+        .set({'description': description, 'uid': uid, 'done': false});
   }
 }

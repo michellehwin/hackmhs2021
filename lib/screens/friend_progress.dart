@@ -25,10 +25,7 @@ class _FriendProgressState extends State<FriendProgress> {
           ElevatedButton(
               onPressed: () {
                 print("why won't you nav");
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PersonalTodo()),
-                );
+                Navigator.pushNamed(context, '/personal');
               },
               child: Text("Personal Todo"))
         ],
