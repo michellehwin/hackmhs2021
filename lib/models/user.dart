@@ -9,11 +9,12 @@ class UserData {
   String firstName;
   String lastName;
   List<String> pendingFriends;
+  List<String> friends;
 
   UserData(
       {this.uid,
       this.email,
       this.firstName,
       this.lastName,
-      this.pendingFriends});
+      this.pendingFriends, this.friends});
 }

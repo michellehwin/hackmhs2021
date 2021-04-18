@@ -33,30 +33,34 @@ class DatabaseService {
   }
 
   Future<UserData> user([String userID = ""]) async {
-    print("userID: " + userID);
+    // print("userID: " + userID);
     if (userID == "") {
-      print("myUser");
       return await userCollection.doc(uid).get().then(_userFromSnapshot);
     } else {
-      print("other user");
       return await userCollection.doc(userID).get().then(_userFromSnapshot);
     }
   }
 
   UserData _userFromSnapshot(DocumentSnapshot snapshot) {
     return UserData(
-      uid: snapshot.id,
-      email: snapshot.data()['email'],
-      firstName: snapshot.data()['firstName'],
-      lastName: snapshot.data()['lastName'],
-    );
+        uid: snapshot.id,
+        email: snapshot.data()['email'],
+        firstName: snapshot.data()['firstName'],
+        lastName: snapshot.data()['lastName'],
+        pendingFriends: List.from(snapshot.data()['pendingFriends'] ?? []),
+        friends: List.from(snapshot.data()['friends'] ?? []));
   }
 
-  Stream<List<Task>> get userTaskDataStream {
+  Stream<List<Task>> userTaskDataStream({userID = ""}) {
+    if(userID == "")
     return taskCollection
         .where("uid", isEqualTo: uid)
         .snapshots()
         .map(_taskListFromStream);
+        else return taskCollection
+          .where("uid", isEqualTo: userID)
+          .snapshots()
+          .map(_taskListFromStream);
   }
 
   Future<List<Task>> get userTasks async {
@@ -109,7 +113,8 @@ class DatabaseService {
         email: snapshot.data()['email'],
         firstName: snapshot.data()['firstName'],
         lastName: snapshot.data()['lastName'],
-        pendingFriends: List.from(snapshot.data()['pendingFriends'] ?? []));
+        pendingFriends: List.from(snapshot.data()['pendingFriends'] ?? []),
+        friends: List.from(snapshot.data()['friends'] ?? []));
   }
 
   void acceptFriend({String friendID}) {
@@ -127,7 +132,7 @@ class DatabaseService {
   }
 
   void ignoreFriend({String friendID}) {
-    print(uid + " friendID: " + friendID);
+    // print(uid + " friendID: " + friendID);
     userCollection.doc(uid).update({
       "pendingFriends": FieldValue.arrayRemove([friendID])
     });

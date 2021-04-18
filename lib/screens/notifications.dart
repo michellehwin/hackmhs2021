@@ -16,7 +16,7 @@ class Notifications extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List<String> pendingFriends = snapshot.data.pendingFriends;
-                print(pendingFriends);
+                // print(pendingFriends);
                 return ListView.builder(
                     itemCount: pendingFriends.length,
                     itemBuilder: (context, index) {
@@ -25,7 +25,7 @@ class Notifications extends StatelessWidget {
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               UserData pendingUser = snapshot.data;
-                              print(pendingUser.firstName);
+                              // print(pendingUser.firstName);
                               return ListTile(
                                   leading: Text(pendingUser.firstName +
                                       " " +
@@ -42,7 +42,7 @@ class Notifications extends StatelessWidget {
                                         TextButton(
                                             child: Text("Ignore"),
                                             onPressed: () {
-                                              print("ignoring friends: " + pendingUser.uid);
+                                              // print("ignoring friends: " + pendingUser.uid);
                                               database.ignoreFriend(
                                                   friendID: pendingUser.uid);
                                             })

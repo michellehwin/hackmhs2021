@@ -82,16 +82,16 @@ class _FriendProgressState extends State<FriendProgress> {
                     title: Text(user.firstName + " " + user.lastName),
                     // title: Text("please"),
                     subtitle: StreamBuilder(
-                        stream: database.userTaskDataStream,
+                        stream: database.userTaskDataStream(),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            print(snapshot.data);
+                            // print(snapshot.data);
                             List<Task> userTasks = snapshot.data;
                             double done = 0;
                             for (int i = 0; i < userTasks.length; i++) {
                               if (userTasks[i].done) done++;
                             }
-                            print(done / userTasks.length);
+                            // print(done / userTasks.length);
 
                             return LinearProgressIndicator(
                               value: !(done == 0)
@@ -100,7 +100,7 @@ class _FriendProgressState extends State<FriendProgress> {
                               semanticsLabel: 'Linear progress indicator',
                             );
                           } else {
-                            print("snapshot no data");
+                            // print("snapshot no data");
                             return Container();
                           }
                         }),
@@ -108,15 +108,68 @@ class _FriendProgressState extends State<FriendProgress> {
                 } else
                   return ListTile();
               }),
-          StreamBuilder(
-              stream: database.userDataStream,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  UserData user = snapshot.data;
-                  
-                } else
-                  return Container();
-              }),
+          Expanded(
+            child: StreamBuilder(
+                stream: database.userDataStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    UserData user = snapshot.data;
+                    List<String> friends = user.friends;
+                    return ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: friends.length,
+                        itemBuilder: (context, index) {
+                          return FutureBuilder(
+                              future: database.user(friends[index]),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  UserData friend = snapshot.data;
+                                  print("friend: " + friend.firstName);
+                                  return ListTile(
+                                    leading: Image(
+                                        image: NetworkImage(
+                                            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")),
+                                    title: Text(friend.firstName +
+                                        " " +
+                                        friend.lastName),
+                                    subtitle: StreamBuilder(
+                                        stream: database.userTaskDataStream(userID: friend.uid),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            // print(snapshot.data);
+                                            List<Task> userTasks =
+                                                snapshot.data;
+                                            double done = 0;
+                                            for (int i = 0;
+                                                i < userTasks.length;
+                                                i++) {
+                                              if (userTasks[i].done) done++;
+                                            }
+                                            // print(done / userTasks.length);
+
+                                            return LinearProgressIndicator(
+                                              value: !(done == 0)
+                                                  ? (done / userTasks.length)
+                                                  : 0.0,
+                                              semanticsLabel:
+                                                  'Linear progress indicator',
+                                            );
+                                          } else {
+                                            // print("snapshot no data");
+                                            return Container();
+                                          }
+                                        }),
+                                  );
+                                } else {
+                                  print("error");
+                                  return Container();
+                                }
+                              });
+                        });
+                  } else
+                    return Container();
+                }),
+          ),
           ElevatedButton(
               onPressed: () async {
                 await _auth.signOut();

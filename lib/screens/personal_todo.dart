@@ -36,7 +36,7 @@ class _PersonalTodoState extends State<PersonalTodo> {
         ),
       ),
       body: StreamBuilder(
-          stream: database.userTaskDataStream,
+          stream: database.userTaskDataStream(),
           builder: (context, snapshot) {
             // print(snapshot.data);
             if (!snapshot.hasData)

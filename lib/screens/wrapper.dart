@@ -17,7 +17,7 @@ class Wrapper extends StatelessWidget {
     if (user == null) {
       return Authenticate();
     } else {
-      print("initialized");
+      // print("initialized");
       return MultiProvider(
           providers: [
             // Provider<FirestoreService>(
