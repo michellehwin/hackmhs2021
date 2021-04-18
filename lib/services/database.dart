@@ -1,3 +1,4 @@
+import 'package:hackmhs2021/models/task.dart';
 import 'package:hackmhs2021/models/user.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,5 +30,26 @@ class DatabaseService {
     return await taskCollection
         .doc()
         .set({'description': description, 'uid': uid, 'done': false});
+  }
+
+  Stream<List<Task>> get userTaskDataStream {
+    return taskCollection
+        .where("uid", isEqualTo: uid)
+        .snapshots()
+        .map(_taskListFromSnapshot);
+  }
+
+  List<Task> _taskListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return Task(
+        description: doc.data()['description'],
+        done: doc.data()['done'],
+        id: doc.id,
+      );
+    }).toList();
+  }
+
+  void setTask({String taskID, bool done}) {
+    taskCollection.doc(taskID).set({'done': done}, SetOptions(merge: true));
   }
 }

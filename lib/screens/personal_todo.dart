@@ -21,12 +21,6 @@ class _PersonalTodoState extends State<PersonalTodo> {
     });
   }
 
-  void _onToggle(Task task) {
-    setState(() {
-      task.done = (!task.done);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<DatabaseService>(context);
@@ -41,13 +35,31 @@ class _PersonalTodoState extends State<PersonalTodo> {
           onPressed: () => Navigator.pop(context, false),
         ),
       ),
-      body: ListView.builder(
-          itemCount: _todoItems.length,
-          itemBuilder: (context, index) {
-            return CheckboxListTile(
-                title: Text(_todoItems[index].description),
-                value: _todoItems[index].done,
-                onChanged: (_) => _onToggle(_todoItems[index]));
+      body: StreamBuilder(
+          stream: database.userTaskDataStream,
+          builder: (context, snapshot) {
+            print(snapshot.data);
+            if (!snapshot.hasData)
+              return ListTile(title: Text("Loading..."));
+            else {
+              List<Task> tasks = snapshot.data;
+              return ListView.builder(
+                  itemCount: tasks.length,
+                  itemBuilder: (context, index) {
+                    return CheckboxListTile(
+                        value: tasks[index].done,
+                        title: !tasks[index].done
+                            ? Text(tasks[index].description)
+                            : Text(tasks[index].description,
+                                style: TextStyle(
+                                    decoration: TextDecoration.lineThrough,
+                                        decorationThickness: 2,
+                                )),
+                        onChanged: (bool val) {
+                          database.setTask(taskID: tasks[index].id, done: val);
+                        });
+                  });
+            }
           }),
       floatingActionButton: new FloatingActionButton(
           onPressed: () {
@@ -59,6 +71,7 @@ class _PersonalTodoState extends State<PersonalTodo> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    //TODO: Grey out
                     Text("Hello"),
                     Form(
                         key: _formKey,
@@ -72,7 +85,7 @@ class _PersonalTodoState extends State<PersonalTodo> {
                 ),
                 actions: <Widget>[
                   new TextButton(
-                    onPressed: () async{
+                    onPressed: () async {
                       await database.addTask(description: description);
                       print(description);
                       Navigator.of(context).pop();
