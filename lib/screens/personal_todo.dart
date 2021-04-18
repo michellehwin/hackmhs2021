@@ -27,41 +27,11 @@ class _PersonalTodoState extends State<PersonalTodo> {
     });
   }
 
-  Widget _buildPopupDialog(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     final database = Provider.of<DatabaseService>(context);
     String description;
     final _formKey = GlobalKey<FormState>();
-
-    return new AlertDialog(
-      title: const Text('Popup example'),
-      content: new Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text("Hello"),
-          Form(
-              key: _formKey,
-              child: TextFormField(
-                  validator: (val) => val.isEmpty ? 'Enter a task' : null,
-                  onChanged: (val) {
-                    setState(() => description = val);
-                  }))
-        ],
-      ),
-      actions: <Widget>[
-        new TextButton(
-          onPressed: () {
-            database.addTask(description:description);
-            Navigator.of(context).pop();
-          },
-          child: const Text('Add'),
-        ),
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
 
     return new Scaffold(
       appBar: new AppBar(
@@ -83,7 +53,34 @@ class _PersonalTodoState extends State<PersonalTodo> {
           onPressed: () {
             showDialog(
               context: context,
-              builder: (context) => _buildPopupDialog(context),
+              builder: (context) => AlertDialog(
+                title: const Text('Popup example'),
+                content: new Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("Hello"),
+                    Form(
+                        key: _formKey,
+                        child: TextFormField(
+                            validator: (val) =>
+                                val.isEmpty ? 'Enter a task' : null,
+                            onChanged: (val) {
+                              setState(() => description = val);
+                            }))
+                  ],
+                ),
+                actions: <Widget>[
+                  new TextButton(
+                    onPressed: () async{
+                      await database.addTask(description: description);
+                      print(description);
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Add'),
+                  ),
+                ],
+              ),
             );
           },
           tooltip: 'Add task',

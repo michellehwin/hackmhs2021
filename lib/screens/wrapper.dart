@@ -17,15 +17,16 @@ class Wrapper extends StatelessWidget {
     } else {
       print("initialized");
       return MultiProvider(
-        providers: [
-          // Provider<FirestoreService>(
-          //   create: (_) => FirestoreService(uid: user.uid),
-          // ),
-          Provider<DatabaseService>(
-              create: (_) => DatabaseService(uid: user.uid))
-        ],
-        child: MaterialApp(
-            title: 'Named Routes Demo',
+          providers: [
+            // Provider<FirestoreService>(
+            //   create: (_) => FirestoreService(uid: user.uid),
+            // ),
+            Provider<DatabaseService>(
+              create: (_) => DatabaseService(uid: user.uid),
+            )
+          ],
+          child: MaterialApp(
+            title: 'Tacked',
             // Start the app with the "/" named route. In this case, the app starts
             // on the FirstScreen widget.
             initialRoute: '/',
@@ -35,8 +36,7 @@ class Wrapper extends StatelessWidget {
               // When navigating to the "/second" route, build the SecondScreen widget.
               '/personal': (context) => PersonalTodo(),
             },
-          )
-      );
+          ));
     }
   }
 }

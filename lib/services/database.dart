@@ -27,7 +27,7 @@ class DatabaseService {
 
   Future addTask({String description}) async {
     return await taskCollection
-        .doc(uid)
+        .doc()
         .set({'description': description, 'uid': uid, 'done': false});
   }
 }
