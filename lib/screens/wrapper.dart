@@ -6,6 +6,8 @@ import 'package:hackmhs2021/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'notifications.dart';
+
 class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,7 @@ class Wrapper extends StatelessWidget {
             )
           ],
           child: MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: 'Tacked',
             // Start the app with the "/" named route. In this case, the app starts
             // on the FirstScreen widget.
@@ -35,6 +38,7 @@ class Wrapper extends StatelessWidget {
               '/': (context) => FriendProgress(),
               // When navigating to the "/second" route, build the SecondScreen widget.
               '/personal': (context) => PersonalTodo(),
+              '/notifs': (context) => Notifications()
             },
           ));
     }

@@ -8,13 +8,12 @@ class UserData {
   String email;
   String firstName;
   String lastName;
-  String pfpURL;
+  List<String> pendingFriends;
 
-  UserData({
-    this.uid,
-    this.email,
-    this.firstName,
-    this.lastName,
-    this.pfpURL,
-  });
+  UserData(
+      {this.uid,
+      this.email,
+      this.firstName,
+      this.lastName,
+      this.pendingFriends});
 }

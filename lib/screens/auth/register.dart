@@ -47,7 +47,6 @@ class _RegisterState extends State<Register> {
                     );
                     if (result != null) {
                       Navigator.pop(context);
-                      Navigator.pop(context);
                     }
                   } else {
                     setState(() {

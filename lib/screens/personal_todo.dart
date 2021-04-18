@@ -38,7 +38,7 @@ class _PersonalTodoState extends State<PersonalTodo> {
       body: StreamBuilder(
           stream: database.userTaskDataStream,
           builder: (context, snapshot) {
-            print(snapshot.data);
+            // print(snapshot.data);
             if (!snapshot.hasData)
               return ListTile(title: Text("Loading..."));
             else {
@@ -87,7 +87,7 @@ class _PersonalTodoState extends State<PersonalTodo> {
                   new TextButton(
                     onPressed: () async {
                       await database.addTask(description: description);
-                      print(description);
+                      // print(description);
                       Navigator.of(context).pop();
                     },
                     child: const Text('Add'),
