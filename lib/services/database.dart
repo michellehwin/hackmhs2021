@@ -1,3 +1,4 @@
+
 import 'package:hackmhs2021/models/task.dart';
 import 'package:hackmhs2021/models/user.dart';
 import 'dart:async';
@@ -27,9 +28,9 @@ class DatabaseService {
   }
 
   Future addTask({String description}) async {
-    return await taskCollection
-        .doc()
-        .set({'description': description, 'uid': uid, 'done': false});
+    var dt = DateTime.now();
+    return await taskCollection.doc().set(
+        {'description': description, 'uid': uid, 'done': false, "time": dt});
   }
 
   Future<UserData> user([String userID = ""]) async {
@@ -52,13 +53,16 @@ class DatabaseService {
   }
 
   Stream<List<Task>> userTaskDataStream({userID = ""}) {
-    if(userID == "")
-    return taskCollection
-        .where("uid", isEqualTo: uid)
-        .snapshots()
-        .map(_taskListFromStream);
-        else return taskCollection
+    if (userID == "")
+      return taskCollection
+          .where("uid", isEqualTo: uid)
+          .orderBy("time")
+          .snapshots()
+          .map(_taskListFromStream);
+    else
+      return taskCollection
           .where("uid", isEqualTo: userID)
+          .orderBy("time")
           .snapshots()
           .map(_taskListFromStream);
   }
@@ -136,5 +140,13 @@ class DatabaseService {
     userCollection.doc(uid).update({
       "pendingFriends": FieldValue.arrayRemove([friendID])
     });
+  }
+
+  Future<Task> getOneTask({userID}) async {
+    return taskCollection.where("uid", isEqualTo: userID).where("done",isEqualTo:false).limit(1).get().then(
+        (snapshot) => new Task(
+            description: snapshot.docs[0].data()['description'],
+            done: snapshot.docs[0].data()['done'],
+            id: snapshot.docs[0].data()['id']));
   }
 }

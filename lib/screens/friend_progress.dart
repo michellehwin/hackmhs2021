@@ -25,6 +25,7 @@ class _FriendProgressState extends State<FriendProgress> {
         title: new Text("Tacked"),
         leading: IconButton(
             icon: Icon(Icons.notifications),
+            tooltip: "bruh",
             onPressed: () {
               Navigator.pushNamed(context, '/notifs');
             }),
@@ -75,11 +76,15 @@ class _FriendProgressState extends State<FriendProgress> {
                 if (snapshot.hasData) {
                   UserData user = snapshot.data;
                   return ListTile(
+                    contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    visualDensity: VisualDensity(horizontal: 1, vertical: 1),
                     onTap: () => Navigator.pushNamed(context, '/personal'),
-                    leading: Image(
-                        image: NetworkImage(
+                    leading: CircleAvatar(
+                        radius: 25,
+                        backgroundImage: NetworkImage(
                             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")),
-                    title: Text(user.firstName + " " + user.lastName),
+                    title:
+                        Text(user.firstName + " " + user.lastName + " (You)"),
                     // title: Text("please"),
                     subtitle: StreamBuilder(
                         stream: database.userTaskDataStream(),
@@ -94,13 +99,13 @@ class _FriendProgressState extends State<FriendProgress> {
                             // print(done / userTasks.length);
 
                             return LinearProgressIndicator(
+                              minHeight: 7,
                               value: !(done == 0)
                                   ? (done / userTasks.length)
                                   : 0.0,
                               semanticsLabel: 'Linear progress indicator',
                             );
                           } else {
-                            // print("snapshot no data");
                             return Container();
                           }
                         }),
@@ -108,6 +113,7 @@ class _FriendProgressState extends State<FriendProgress> {
                 } else
                   return ListTile();
               }),
+          Divider(),
           Expanded(
             child: StreamBuilder(
                 stream: database.userDataStream,
@@ -124,41 +130,79 @@ class _FriendProgressState extends State<FriendProgress> {
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   UserData friend = snapshot.data;
-                                  print("friend: " + friend.firstName);
-                                  return ListTile(
-                                    leading: Image(
-                                        image: NetworkImage(
-                                            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")),
-                                    title: Text(friend.firstName +
-                                        " " +
-                                        friend.lastName),
-                                    subtitle: StreamBuilder(
-                                        stream: database.userTaskDataStream(userID: friend.uid),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData) {
-                                            // print(snapshot.data);
-                                            List<Task> userTasks =
-                                                snapshot.data;
-                                            double done = 0;
-                                            for (int i = 0;
-                                                i < userTasks.length;
-                                                i++) {
-                                              if (userTasks[i].done) done++;
-                                            }
-                                            // print(done / userTasks.length);
+                                  return Padding(
+                                    padding: const EdgeInsets.fromLTRB(0,8,0,8),
+                                    child: ListTile(
+                                      leading: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          CircleAvatar(
+                                              radius: 25,
+                                              backgroundImage: NetworkImage(
+                                                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")),
+                                        ],
+                                      ),
+                                      title: Text(friend.firstName +
+                                          " " +
+                                          friend.lastName),
+                                      subtitle: Column(
+                                            mainAxisAlignment:
+                                              MainAxisAlignment.center,
 
-                                            return LinearProgressIndicator(
-                                              value: !(done == 0)
-                                                  ? (done / userTasks.length)
-                                                  : 0.0,
-                                              semanticsLabel:
-                                                  'Linear progress indicator',
-                                            );
-                                          } else {
-                                            // print("snapshot no data");
-                                            return Container();
-                                          }
-                                        }),
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(height:5),
+                                            StreamBuilder(
+                                                stream:
+                                                    database.userTaskDataStream(
+                                                        userID: friend.uid),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot.hasData) {
+                                                    // print(snapshot.data);
+                                                    List<Task> userTasks =
+                                                        snapshot.data;
+                                                    double done = 0;
+                                                    for (int i = 0;
+                                                        i < userTasks.length;
+                                                        i++) {
+                                                      if (userTasks[i].done)
+                                                        done++;
+                                                    }
+                                                    // print(done / userTasks.length);
+
+                                                    return LinearProgressIndicator(
+                                                      minHeight: 7,
+                                                      value: !(done == 0)
+                                                          ? (done /
+                                                              userTasks.length)
+                                                          : 0.0,
+                                                      semanticsLabel:
+                                                          'Linear progress indicator',
+                                                    );
+                                                  } else {
+                                                    // print("snapshot no data");
+                                                    return Container();
+                                                  }
+                                                }),
+                                            SizedBox(height: 5),
+                                            FutureBuilder(
+                                                future: database.getOneTask(
+                                                    userID: friend.uid),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot.hasData) {
+                                                    Task task = snapshot.data;
+                                                    return Text(
+                                                        "Currently working on " +
+                                                            task.description +
+                                                            ".");
+                                                  } else
+                                                    return Text(
+                                                        "No tasks to complete.");
+                                                })
+                                          ]),
+                                    ),
                                   );
                                 } else {
                                   print("error");
@@ -170,16 +214,6 @@ class _FriendProgressState extends State<FriendProgress> {
                     return Container();
                 }),
           ),
-          ElevatedButton(
-              onPressed: () async {
-                await _auth.signOut();
-              },
-              child: Text("Sign Out")),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/personal');
-              },
-              child: Text("Personal Todo"))
         ],
       ),
     );

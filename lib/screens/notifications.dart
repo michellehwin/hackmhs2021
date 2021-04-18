@@ -17,7 +17,9 @@ class Notifications extends StatelessWidget {
               if (snapshot.hasData) {
                 List<String> pendingFriends = snapshot.data.pendingFriends;
                 // print(pendingFriends);
-                return ListView.builder(
+                return ListView.separated(
+                    separatorBuilder: (context, index) =>
+                        Divider(thickness: 1, height: 1),
                     itemCount: pendingFriends.length,
                     itemBuilder: (context, index) {
                       return FutureBuilder(
@@ -27,20 +29,26 @@ class Notifications extends StatelessWidget {
                               UserData pendingUser = snapshot.data;
                               // print(pendingUser.firstName);
                               return ListTile(
-                                  leading: Text(pendingUser.firstName +
+                                  contentPadding: EdgeInsets.all(16),
+                                  title: Text(pendingUser.firstName +
                                       " " +
-                                      pendingUser.lastName),
+                                      pendingUser.lastName +
+                                      " wants to be your friend!"),
                                   trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
                                         TextButton(
-                                            child: Text("Accept"),
+                                            child: Text("Accept",
+                                                style: TextStyle(
+                                                    color: Colors.green)),
                                             onPressed: () {
                                               database.acceptFriend(
                                                   friendID: pendingUser.uid);
                                             }),
                                         TextButton(
-                                            child: Text("Ignore"),
+                                            child: Text("Ignore",
+                                                style: TextStyle(
+                                                    color: Colors.red)),
                                             onPressed: () {
                                               // print("ignoring friends: " + pendingUser.uid);
                                               database.ignoreFriend(
