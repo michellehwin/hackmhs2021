@@ -25,7 +25,7 @@ class _AuthenticateState extends State<Authenticate> {
       child: Column(
         children: <Widget>[
           Text(
-            "Tak'd",
+            "Tacked",
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           SizedBox(
@@ -42,8 +42,7 @@ class _AuthenticateState extends State<Authenticate> {
           ),
           OutlinedButton(
               child: Text(
-                "Sign In",
-                style: TextStyle(color: Colors.green),
+                "Sign In"
               ),
               onPressed: _pushSignIn),
         ],
