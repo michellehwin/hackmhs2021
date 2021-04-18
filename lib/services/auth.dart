@@ -30,7 +30,7 @@ class AuthService {
 
   //register w email and pw
   Future registerWithEmailAndPw(String email, String password, String firstName,
-      String lastName, bool isTeacher, String schoolID) async {
+      String lastName) async {
     try {
       auth.UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email.trim(), password: password);

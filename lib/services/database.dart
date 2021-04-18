@@ -11,8 +11,7 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('users');
 
   //set email and name
-  Future updateUserData({
-    String email,
+  Future updateUserData({String email,
     String firstName,
     String lastName,
   }) async {

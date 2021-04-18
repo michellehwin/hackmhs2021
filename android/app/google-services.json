@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "787055389569",
+    "project_id": "hackmhs2021",
+    "storage_bucket": "hackmhs2021.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787055389569:android:87fbf3889f87ad689d1680",
+        "android_client_info": {
+          "package_name": "com.takd.hackmhs2021"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "787055389569-bccqhndd000bt0qfiek8821aa283mmpr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCes6KQI3UOx6jibWIf-0VTT2OT-Uts3FI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "787055389569-bccqhndd000bt0qfiek8821aa283mmpr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
